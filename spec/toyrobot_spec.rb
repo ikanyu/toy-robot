@@ -14,7 +14,7 @@ describe Robot do
 		end
 
 		context 'Robot not on table' do
-			let!(:file) { File.readlines('test8.txt') }
+			let!(:file) { File.readlines('test7.txt') }
 			it 'shows reminder' do
 				robot = Robot.new(file)
 				robot.start_game
@@ -23,7 +23,7 @@ describe Robot do
 		end
 
 		context 'Stop robot from falling' do
-			let!(:file) { File.readlines('test9.txt') }
+			let!(:file) { File.readlines('test8.txt') }
 			it 'remains at same place' do
 				robot = Robot.new(file)
 				robot.start_game

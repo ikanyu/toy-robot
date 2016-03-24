@@ -1,3 +1,4 @@
+require 'byebug'
 require 'active_model'
 require_relative 'toy_helper.rb'
 
@@ -19,43 +20,56 @@ class Robot
 		@commands.each do |command|
 			data = command.split(' ')
 			action = data[0]
-			case action
-			when 'PLACE'				
+			if action.upcase == 'PLACE'
 				@x_coordinate, @y_coordinate, @current_direction = data[1].split(',')
 				@x_coordinate = @x_coordinate.to_i
 				@y_coordinate = @y_coordinate.to_i
-			when 'LEFT'
+				@current_direction = @current_direction.upcase
+				if @x_coordinate < 0 || @y_coordinate < 0
+					@x_coordinate = 0
+					@y_coordinate = 0
+					@current_direction = nil
+					puts 'X and Y coordinate must be bigger than 0!'
+				end
+			elsif action.upcase == 'LEFT'
 				left
-			when 'RIGHT'
+			elsif action.upcase == 'RIGHT'
 				right
-			when 'REPORT'
+			elsif action.upcase == 'REPORT'
 				report
-			when 'MOVE'
+			elsif action.upcase == 'MOVE'
 				move
+			else
+				return
 			end
 		end
 		@report
 	end
 
 	def left
-		return errors.full_messages unless placed_on_board?
+		return unless placed_on_board?
 		position = @direction.find_index(@current_direction)
 		@current_direction = @direction[position - 1]
 	end
 
 	def right
-		return errors.full_messages unless placed_on_board?
+		return unless placed_on_board?
 		position = @direction.find_index(@current_direction)
 		position == 3 ? @current_direction = @direction[0] : @current_direction = @direction[position + 1]
 	end
 
 	def move
-		return errors.full_messages unless placed_on_board?
+		return unless placed_on_board?
 		check_danger_and_move(@current_direction)
 	end
 
 	def report
-		@report = "#{@x_coordinate},#{@y_coordinate},#{@current_direction}" unless @current_direction.nil?
+		if placed_on_board?
+			@report = "#{@x_coordinate},#{@y_coordinate},#{@current_direction}" 
+			puts @report
+		else
+			puts "Toy not placed on board"
+		end
 	end
 
 end
